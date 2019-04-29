@@ -1,98 +1,223 @@
 body {
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Proxima Nova", "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #191414;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #191414;
+    color: #fff;
 }
 
 .login-page {
-  display: block;
-  height: 300px;
-  width: 500px;
-  margin: auto;
-  margin-top: 100px;
-  padding: 30px;
-  background-color: #191414;
+    display: block;
+    height: 300px;
+    width: 500px;
+    margin: auto;
 }
 
 .logo-wrapper {
-  display: block;
-  width: 400px;
-  height: auto;
-  margin: 0 auto;
+    display: block;
+    width: 400px;
+    height: auto;
+    margin: 0 auto;
+    margin-top: 40px;
 }
 
 .spotify-logo {
-  width: 400px;
-  height: auto;
-}
-
-.login-link {
-  text-decoration: none;
-  font-size: 20px;
-  display: block;
-  color: #fff;
-  height: 27px;
-  width: 170px;
-  margin: 0 auto;
-  margin-top: 100px;
-  padding: 5px 0;
-  background-color: #1DB954;
-  text-align: center;
-  border: 2px solid #1DB954;
-  -webkit-border-radius: 15px;
-  -moz-border-radius: 15px;
-  border-radius: 15px;
+    display: block;
+    width: 400px;
+    height: auto;
 }
 
 .search-form {
-  display: block;
-  height: 300px;
-  width: 500px;
-  margin: auto;
-  margin-top: 100px;
-  padding: 30px;
-  background-color: #191414;
-}
-
-.form {
-  margin-top: 100px;
+    display: block;
+    width: 500px;
+    margin: auto;
+    margin-top: 50px;
 }
 
 .search-input {
-  display: inline-block;
-  color: #191414;
-  width: 290px;
-  height: 30px;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 18px;
+    display: inline-block;
+    color: #191414;
+    width: 290px;
+    height: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.login-link,
+.search-button,
+.reselect-playlist,
+.start-game {
+    display: inline-block;
+    margin: 2px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 20px;
+    color: #fff;
+    height: 36px;
+    width: auto;
+    padding: 0 10px;
+    background-color: #1DB954;
+    text-align: center;
+    border: 2px solid #1DB954;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.login-link {
+    display: block;
+    width: 150px;
+    height: 30px;
+    padding-top: 5px;
+    margin: auto;
+    margin-top: 50px;
 }
 
 .search-button {
-  float: right;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 20px;
-  color: #fff;
-  height: 38px;
-  width: 170px;
-  margin-left: 30px;
-  padding: 5px 0;
-  background-color: #1DB954;
-  text-align: center;
-  border: 2px solid #1DB954;
-  -webkit-border-radius: 15px;
-  -moz-border-radius: 15px;
-  border-radius: 15px;
-  cursor: pointer;
+    float: right;
+    margin-left: 30px;
+}
+
+.reselect-playlist,
+.start-game {
+    font-size: 18px;
+}
+
+.reselect-playlist {
+    margin-right: 10px;
+}
+
+.selected-playlist {
+    display: block;
+    width: 330px;
+    margin: 0 auto;
+    padding: 30px;
+    text-decoration: none;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.playlist-image {
+    display: block;
+    width: 300px;
+    margin: 5px auto;
+}
+
+.playlist-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 310px;
+    height: 38px;
+    margin: auto;
+}
+
+.guess-header {
+    display: block;
+    font-weight: bold;
+    text-align: center;
+    font-size: 24px;
+}
+
+.song-image {
+    float: left;
+    width: 66px;
+    border-radius: 50%;
+}
+
+.song-info {
+    display: block;
+    width: 276px;
+    height: 70px;
+    padding: 2px;
+    max-height: 100px;
+    margin-left: 70px;
+}
+
+.song-name,
+.song-artists {
+    display: inline-block;
+    margin: 0;
+    padding: 3px;
+    width: 270px;
+    font-size: 15px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.song-artists {
+    height: 20px;
+}
+
+.song-name {
+    height: 40px;
+    font-weight: initial;
+}
+
+.timer,
+.round-score {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 20px;
+    width: auto;
+    text-align: center;
+    margin-top: 8px;
+}
+
+.timer {
+    width: 100px;
+    padding: 5px;
+    margin-top: 18px;
+    background-color: #1DB954;
+}
+
+.round-score {
+    text-align: center;
+}
+
+.answer-options {
+    display: block;
+    width: 740px;
+    margin: 0 auto;
+}
+
+.answer-item {
+    display: inline-block;
+    width: 350px;
+    height: 69px;
+    padding: 10px;
+    text-align: center;
+    outline: 1px solid #fff;
+}
+
+.answer-item:hover {
+    background-color: #1DB954;
+    cursor: pointer;
+}
+
+.game-stats {
+    display: block;
+    width: 300px;
+    margin: 0 auto;
+}
+
+.game-over-header,
+.game-over-score {
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
