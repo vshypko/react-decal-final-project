@@ -1,5 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import PlaylistDisplay from "./PlaylistDisplay.js"
+import PlaylistSearch from "./PlaylistSearch.js"
+import SongDisplay from "./SongDisplay.js"
+import GameStats from "./GameStats.js"
 
 import Spotify from "spotify-web-api-js";
 
@@ -234,75 +238,35 @@ class App extends React.Component {
         </div>
 
         {this.state.playlistName === "" &&
-        <div className="ui container search-form">
-          <form className="ui form" onSubmit={this.onSubmit}>
-            <input
-              className="search-input"
-              type="text"
-              onChange={e => this.setState({search: e.target.value})}
-            />
-            <input className="search-button" type="submit" value="Search Playlist"/>
-          </form>
-          <select
-            className="ui dropdown"
-            onChange={e => this.setState({currentDevice: e.target.value})}
-          >
-            {this.state.devices.map(device => (
-              <option key={device.id} value={device.id}>{device.name}</option>
-            ))}
-          </select>
-        </div>
+            <PlaylistSearch submit={(e) => this.onSubmit(e)}
+                            changeSearch={(e) => this.setState({search: e.target.value})}
+                            changeDevice={(e) => this.setState({search: e.target.value})}
+                            devices={this.state.devices}/>
         }
 
         {/*Separate component for playlist display with props (image link and name)?*/}
         {this.state.playlistName !== "" &&
-        <div className="ui container selected-playlist">
-          <p>Selected Playlist: {this.state.playlistName}</p>
-          <img className="playlist-image" src={this.state.playlistImageLink} alt=""/>
-          <div className="playlist-buttons">
-            <button className="reselect-playlist" onClick={this.reselectPlaylist}>Reselect Playlist</button>
-            {!this.state.isGameStarted && this.state.songsPlayed === 0 &&
-            <button className="start-game" onClick={this.nextSong}>Start Game</button>
-            }
-            {this.state.isGameStarted &&
-            <p className="timer">Timer: {10 - this.state.roundTimer}</p>
-            }
-          </div>
-        </div>
+        <PlaylistDisplay playlistName={this.state.playlistName}
+                         playlistImageLink={this.state.playlistImageLink}
+                         reselect={() => this.reselectPlaylist()}
+                         isGameStarted={this.state.isGameStarted}
+                         songsPlayed={this.state.songsPlayed}
+                         nextSong={() => this.nextSong()}
+                         roundTimer={this.state.roundTimer}/>
         }
 
         {this.state.playlistName !== "" && this.state.isGameStarted &&
         <div className="ui container answer-options">
           <p className="guess-header">Guess the song!</p>
 
-          {this.state.currentAnswerOptions.map(song => (
-            <div className="ui answer-item" key={song.id} onClick={() => this.checkAnswer(song)}>
-              <div className="ui container">
-                {
-                  song.album.images[0] !== undefined &&
-                  <img className="song-image" src={song.album.images[0].url} alt=""/>
-                }
-              </div>
-              <div className="content song-info">
-                <p className="song-artists">
-                  {song.artists.map(artist => artist.name).join(", ")}
-                </p>
-                <p className="song-name">
-                  {song.name}
-                </p>
-              </div>
-            </div>
-          ))}
+          {this.state.currentAnswerOptions.map(song => (<SongDisplay song={song} checkAnswer={(song) => this.checkAnswer(song)}/>))}
 
           <p className="round-score">Round: {this.state.songsPlayed + 1} | Score: {this.state.score}</p>
         </div>
         }
 
         {!this.state.isGameStarted && this.state.songsPlayed > 0 &&
-        <div className="ui container game-stats">
-          <p className="game-over-header">The game is over!</p>
-          <p className="game-over-score">Your final score is: {this.state.score} out of {this.state.songsPlayed}.</p>
-        </div>
+            <GameStats score={this.state.score} songsPlayed={this.state.songsPlayed}/>
         }
 
       </div>
