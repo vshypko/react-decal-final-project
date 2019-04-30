@@ -6,6 +6,7 @@ import SongDisplay from "./SongDisplay.js"
 import GameStats from "./GameStats.js"
 
 import Spotify from "spotify-web-api-js";
+import {ToastsContainer, ToastsStore, ToastsContainerPosition} from 'react-toasts';
 
 import "./style.css";
 
@@ -14,6 +15,8 @@ class App extends React.Component {
     super(props);
     this.state = {
       authenticated: false,
+      loggedIn: false,
+      token: "",
 
       search: "",
 
@@ -21,6 +24,7 @@ class App extends React.Component {
       currentDevice: "",
 
       playlist: null,
+      playlists: [],
       playlistId: "",
       playlistName: "",
       playlistImageLink: "",
@@ -40,6 +44,7 @@ class App extends React.Component {
     this.checkAnswer = this.checkAnswer.bind(this);
     this.nextSong = this.nextSong.bind(this);
     this.generateAnswerOptions = this.generateAnswerOptions.bind(this);
+    this.selectPlaylist = this.selectPlaylist.bind(this);
   }
 
   async componentDidMount() {
@@ -49,10 +54,15 @@ class App extends React.Component {
       this.spotifyClient = new Spotify();
       this.spotifyClient.setAccessToken(accessToken);
 
+      let user = await this.spotifyClient.getMe();
       const {devices} = await this.spotifyClient.getMyDevices();
+      const playlists = await this.spotifyClient.getUserPlaylists();
       this.setState({
         authenticated: true,
-        devices,
+        token: accessToken,
+        loggedIn: true,
+        devices: devices,
+        playlists: playlists.items,
         currentDevice: devices[0].id
       });
     }
@@ -72,6 +82,11 @@ class App extends React.Component {
     });
   }
 
+  //seeks to position in song
+  async seek(position) { 
+    await this.spotifyClient.seek(position);
+  }
+
   async onSubmit(ev) {
     ev.preventDefault();
     const searchResponse = await this.spotifyClient.searchPlaylists(this.state.search, {
@@ -86,13 +101,41 @@ class App extends React.Component {
       playlistTracksLink: searchResponse.playlists.items[0].tracks.href
     });
 
-    const playlistResponse = await this.spotifyClient.getPlaylistTracks(this.state.playlistId, {
+    let playlistResponse = await this.spotifyClient.getPlaylistTracks(this.state.playlistId, {
       market: "us"
     });
 
     if (playlistResponse.total < 30) {
       this.reselectPlaylist();
-      alert("Not enough tracks to play (<30). Please select other playlist.");
+      alert("Not enough tracks to play (less than 30 songs). Please select other playlist.");
+    }
+
+    let songs = this.selectRandomSongs(playlistResponse.items, this.state.numRounds);
+
+    this.setState({
+      allPlaylistSongs: playlistResponse.items,
+      selectedSongs: songs
+    });
+  }
+
+  async selectPlaylist() {
+    let id = document.getElementById('playlists').value;
+    const playlist = await this.spotifyClient.getPlaylist(id);
+
+    this.setState({
+      playlist: playlist,
+      playlistId: playlist.id,
+      playlistName: playlist.name,
+      playlistImageLink: playlist.images[0].url,
+      playlistTracksLink: playlist.tracks.href
+    });
+
+    let playlistResponse = await this.spotifyClient.getPlaylistTracks(this.state.playlistId, {
+      market: "us"
+    });
+
+    if (this.state.playlist.total < 30) {
+      alert("Not enough tracks to play (less than 30 songs). Please select other playlist.");
     }
 
     let songs = this.selectRandomSongs(playlistResponse.items, this.state.numRounds);
@@ -104,6 +147,8 @@ class App extends React.Component {
   }
 
   reselectPlaylist() {
+    if (this.state.songsPlayed < this.state.selectedSongs.length)
+      this.pausePlayback(this.state.selectedSongs[this.state.songsPlayed].id); //added to stop song playing
     this.setState({
       playlist: null,
       playlistId: "",
@@ -118,7 +163,7 @@ class App extends React.Component {
     });
   }
 
-  nextSong() {
+  async nextSong() {
     if (this.state.songsPlayed >= this.state.numRounds) {
       this.endGame();
       return;
@@ -131,7 +176,9 @@ class App extends React.Component {
       this.generateAnswerOptions();
     });
 
+    let position = await this.selectRandomPosition(this.state.selectedSongs[this.state.songsPlayed].id);
     this.startPlayback(this.state.selectedSongs[this.state.songsPlayed].id);
+    this.seek(position);
 
     this.interval = setInterval(() => {
       if (this.state.roundTimer > 9) {
@@ -187,6 +234,15 @@ class App extends React.Component {
     return songs;
   }
 
+  //added so they can guess from 10 sec anywhere within the song
+  async selectRandomPosition(songId) {
+    let features = await this.spotifyClient.getAudioFeaturesForTrack(songId);
+    let duration = features.duration_ms;
+    let seekPosition = Math.floor(Math.random() * (duration - 10000)); //finds random position in seconds to play 10 seconds
+
+    return seekPosition;
+  }
+
   checkAnswer(song) {
     let isCorrect = false;
     clearInterval(this.interval);
@@ -194,6 +250,7 @@ class App extends React.Component {
       isCorrect = true;
     }
     if (isCorrect) {
+      ToastsStore.success("Correct!");
       this.setState({
           score: this.state.score + 1,
           songsPlayed: this.state.songsPlayed + 1,
@@ -203,6 +260,7 @@ class App extends React.Component {
           this.nextSong();
         });
     } else {
+      ToastsStore.error("Incorrect!");
       this.setState({
           songsPlayed: this.state.songsPlayed + 1,
           roundTimer: 0
@@ -211,6 +269,20 @@ class App extends React.Component {
           this.nextSong();
         });
     }
+  }
+
+  logout() {
+    const queryString = window.location.hash.substring(1);
+    var del = new URLSearchParams(queryString).set("access_token", "");
+    this.setState({
+          authenticated: false,
+          loggedIn: false,
+          token: "",
+          devices: [],
+          currentDevice: ""});
+    const url = 'https://accounts.spotify.com/en/logout/';                                                                                                                                                                                                                                                                               
+    const spotifyLogoutWindow = window.open(url, 'Spotify Logout', 'width=700,height=500,top=40,left=40');                                                                                                
+    setTimeout(() => spotifyLogoutWindow.close(), 2000);
   }
 
   render() {
@@ -224,7 +296,8 @@ class App extends React.Component {
           </div>
           <a className="login-link"
              href={`https://accounts.spotify.com/authorize/?client_id=ac9ec319b658424d8aa1e41317e7c70f&response_type=token&redirect_uri=${window
-               .location.origin + window.location.pathname}&scope=streaming user-read-playback-state user-modify-playback-state user-top-read user-read-private`}>
+               .location.origin + window.location.pathname}&scope=streaming user-read-playback-state user-modify-playback-state user-top-read
+               playlist-read-private playlist-read-collaborative user-read-private`}>
             Login to Spotify
           </a>
         </div>
@@ -237,11 +310,20 @@ class App extends React.Component {
           <img className="spotify-logo" src={spotify_logo} alt=""/>
         </div>
 
+        <div className="logout-wrapper">
+          {this.state.authenticated === true &&
+              <button className="logout" onClick={() => this.logout()}>Logout</button>
+          }
+        </div>
+
         {this.state.playlistName === "" &&
             <PlaylistSearch submit={(e) => this.onSubmit(e)}
                             changeSearch={(e) => this.setState({search: e.target.value})}
-                            changeDevice={(e) => this.setState({search: e.target.value})}
-                            devices={this.state.devices}/>
+                            changeDevice={(e) => this.setState({currentDevice: e.target.value})}
+                            changePlaylist={(e) => this.setState({playlist: e.target.value})}
+                            selectPlaylist={this.selectPlaylist}
+                            devices={this.state.devices}
+                            playlists={this.state.playlists}/>
         }
 
         {/*Separate component for playlist display with props (image link and name)?*/}
@@ -257,7 +339,9 @@ class App extends React.Component {
 
         {this.state.playlistName !== "" && this.state.isGameStarted &&
         <div className="ui container answer-options">
-          <p className="guess-header">Guess the song!</p>
+          <p className="guess-header">Guess the song! We'll play you 10 seconds of audio indicated by the timer.</p>
+
+          <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.BOTTOM_CENTER}/>
 
           {this.state.currentAnswerOptions.map(song => (<SongDisplay song={song} checkAnswer={(song) => this.checkAnswer(song)}/>))}
 

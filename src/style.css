@@ -23,6 +23,14 @@ body {
     margin-top: 40px;
 }
 
+.logout-wrapper {
+    display: block;
+    width: 400px;
+    height: auto;
+    margin: 0 auto;
+    margin-top: 40px;
+}
+
 .spotify-logo {
     display: block;
     width: 400px;
@@ -31,7 +39,7 @@ body {
 
 .search-form {
     display: block;
-    width: 500px;
+    width: 525px;
     margin: auto;
     margin-top: 50px;
 }
@@ -48,7 +56,9 @@ body {
 
 .login-link,
 .search-button,
+.logout,
 .reselect-playlist,
+.user-playlist,
 .start-game {
     display: inline-block;
     margin: 2px;
@@ -66,6 +76,14 @@ body {
     -moz-border-radius: 15px;
     border-radius: 15px;
     cursor: pointer;
+}
+
+.devices {
+    margin-top: 50px;
+}
+
+.logout {
+    margin-left: 150px;
 }
 
 .login-link {
@@ -89,6 +107,10 @@ body {
 
 .reselect-playlist {
     margin-right: 10px;
+}
+
+.user-playlist {
+    margin-left: 30px;
 }
 
 .selected-playlist {
