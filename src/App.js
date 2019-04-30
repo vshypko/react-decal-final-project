@@ -223,7 +223,7 @@ class App extends React.Component {
             <img className="spotify-logo" src={spotify_logo} alt=""/>
           </div>
           <a className="login-link"
-             href={`https://accounts.spotify.com/authorize/?client_id=ac9ec319b658424d8aa1e41317e7c70f&response_type=token&redirect_uri=${window
+             href={`https://accounts.spotify.com/authorize/?client_id=5adf2ce16326470fbd8ae1d9fc2eaa19&response_type=token&redirect_uri=${window
                .location.origin + window.location.pathname}&scope=streaming user-read-playback-state user-modify-playback-state user-top-read user-read-private`}>
             Login to Spotify
           </a>
@@ -238,7 +238,7 @@ class App extends React.Component {
         </div>
 
         {this.state.playlistName === "" &&
-            <PlaylistSearch submit={() => this.onSubmit()}
+            <PlaylistSearch submit={(e) => this.onSubmit(e)}
                             changeSearch={(e) => this.setState({search: e.target.value})}
                             changeDevice={(e) => this.setState({search: e.target.value})}
                             devices={this.state.devices}/>
@@ -259,7 +259,7 @@ class App extends React.Component {
         <div className="ui container answer-options">
           <p className="guess-header">Guess the song!</p>
 
-          {this.state.currentAnswerOptions.map(song => (<SongDisplay song={song}/>))}
+          {this.state.currentAnswerOptions.map(song => (<SongDisplay song={song} checkAnswer={(song) => this.checkAnswer(song)}/>))}
 
           <p className="round-score">Round: {this.state.songsPlayed + 1} | Score: {this.state.score}</p>
         </div>

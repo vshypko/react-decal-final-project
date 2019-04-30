@@ -3,7 +3,7 @@ import React from "react";
 class SongDisplay extends React.Component {
     render() {
         return (
-            <div className="ui answer-item" key={this.props.song.id} onClick={() => this.checkAnswer(this.props.song)}>
+            <div className="ui answer-item" key={this.props.song.id} onClick={() => this.props.checkAnswer(this.props.song)}>
                 <div className="ui container">
                     {
                         this.props.song.album.images[0] !== undefined &&

@@ -5,7 +5,7 @@ class PlaylistSearch extends React.Component{
     render() {
         return (
             <div className="ui container search-form">
-                <form className="ui form" onSubmit={() => this.props.submit()}>
+                <form className="ui form" onSubmit={(e) => this.props.submit(e)}>
                     <input
                         className="search-input"
                         type="text"
