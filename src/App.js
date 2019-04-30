@@ -216,7 +216,7 @@ class App extends React.Component {
   render() {
     const spotify_logo = require('./img/Spotify_Logo_RGB_Green.png')
 
-    if (this.state.authenticated) {
+    if (!this.state.authenticated) {
       return (
         <div className="ui container centered login-page">
           <div className="logo-wrapper">
