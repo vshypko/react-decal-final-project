@@ -134,7 +134,8 @@ class App extends React.Component {
       market: "us"
     });
 
-    if (this.state.playlist.total < 30) {
+    if (playlistResponse.total < 30) {
+      this.reselectPlaylist();
       alert("Not enough tracks to play (less than 30 songs). Please select other playlist.");
     }
 
