@@ -104,10 +104,10 @@ class App extends React.Component {
         let playlistResponse = await this.spotifyClient.getPlaylistTracks(this.state.playlistId, {
             market: "us"
         });
-        
+
         if (playlistResponse.total < 30) {
-          this.reselectPlaylist();
-          alert("Not enough tracks to play (less than 30 songs). Please select other playlist.");
+            this.reselectPlaylist();
+            alert("Not enough tracks to play (less than 30 songs). Please select other playlist.");
         }
 
         let songs = this.selectRandomSongs(playlistResponse.items, this.state.numRounds);
@@ -244,6 +244,7 @@ class App extends React.Component {
     }
 
     checkAnswer(song) {
+        this.pausePlayback();
         let isCorrect = false;
         clearInterval(this.interval);
         if (song.id === this.state.selectedSongs[this.state.songsPlayed].id) {
