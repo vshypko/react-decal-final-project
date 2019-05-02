@@ -220,7 +220,7 @@ class App extends React.Component {
         });
     }
 
-    static selectRandomSongs(array, num) {
+    selectRandomSongs(array, num) {
         let songs = [];
         for (let i = 0; i < num; i++) {
             let item = array[Math.floor(Math.random() * array.length)].track;
