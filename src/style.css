@@ -44,14 +44,20 @@ body {
     margin-top: 50px;
 }
 
-.search-input {
+.search-input,
+.select-playlist {
     display: inline-block;
     color: #191414;
-    width: 290px;
-    height: 30px;
+    width: 286px;
+    height: 26px;
+    padding: 2px;
     text-decoration: none;
     font-weight: bold;
     font-size: 18px;
+}
+
+.select-playlist {
+    width: 295px;
 }
 
 .login-link,
@@ -139,11 +145,12 @@ body {
     margin: auto;
 }
 
-.guess-header {
+.guess-header,
+.select-header {
     display: block;
     font-weight: bold;
     text-align: center;
-    font-size: 24px;
+    font-size: 20px;
 }
 
 .song-image {
@@ -237,6 +244,10 @@ body {
     font-weight: bold;
     font-size: 20px;
     text-align: center;
+}
+
+.toast {
+    color: blue;
 }
 
 code {
