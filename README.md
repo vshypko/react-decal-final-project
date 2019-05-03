@@ -22,6 +22,11 @@ We also use `yarn` since deploying to Netlify did not work with plain npm (becau
 ## Components:
 
 What purpose does each of the components in your app serve?
+Playlist Search - searches for a playlist to select songs from
+Playlist Display - displays the current playlist being used for the game, allows for reselection of playlist
+Song Display - displays song options to guess the currently playing song
+Game Stats - displays the current round and score
+Toast Container - displays visual feed back for incorrect/correct guesses
 
 ## Features:
 
@@ -30,5 +35,5 @@ What features does your app accomplish?
 ## Division of Labor:
 
 - Vasudev Venkatesh — 
-- Marielle Isla — 
+- Marielle Isla — logout functionality, toasts for visual feedback, selecting user playlists, playing random 10 seconds of the song
 - Vitali Shypko — main logic of the app and styling.
